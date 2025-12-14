@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ЗДО</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body { font-family: 'Montserrat', sans-serif; margin:0; padding:0; background:#f9f9f9; color:#333;}
+header { background:#38761d; color:white; padding:20px; text-align:center;}
+header input, header button { padding:8px; margin:5px;}
+nav { background:#2b5c17; display:flex; justify-content:center; flex-wrap:wrap;}
+nav button { background:none; border:none; color:white; padding:15px 20px; cursor:pointer; transition:0.3s;}
+nav button:hover, nav button.active { background:#f7b231; color:#333;}
+.container { max-width:1200px; margin:20px auto; padding:0 20px;}
+.tab-content { display:none;}
+.tab-content.active { display:block;}
+.section-title { color:#38761d; border-bottom:3px solid #f7b231; padding-bottom:5px; margin-bottom:15px;}
+.gallery { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-top:10px;}
+.gallery img { width:100%; border-radius:5px; box-shadow:0 2px 5px rgba(0,0,0,0.2);}
+.upload-area { margin-top:15px; display:none;}
+.upload-area input { display:block; margin-bottom:10px;}
+textarea, input[type="text"], input[type="file"] { width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;}
+button.upload-btn { background:#38761d; color:white; border:none; padding:10px 15px; border-radius:5px; cursor:pointer;}
+button.upload-btn:hover { background:#1e4d0c;}
+textarea { resize: vertical; }
+.admin-only { display:none; }
+.admin .admin-only { display:block; }
+</style>
+</head>
+<body>
+
+<header>
+<h1>ЗДО</h1>
+<p>Вхід для персоналу — пароль або email</p>
+<input type="text" id="userInput" placeholder="Пароль або Email">
+<button onclick="checkAccess()">Увійти</button>
+<button onclick="guestAccess()">Увійти як гість</button>
+</header>
+
+<div class="container" id="mainContent" style="display:none;">
+<nav>
+<button class="tab-btn active" data-tab="teachers">Вихователі</button>
+<button class="tab-btn" data-tab="groups">Групи</button>
+<button class="tab-btn" data-tab="orders">Накази</button>
+<button class="tab-btn" data-tab="attestation">Атестація</button>
+<button class="tab-btn" data-tab="vacant">Вакантні посади</button>
+<button class="tab-btn" data-tab="statut">Статут</button>
+</nav>
+
+<!-- Вихователі -->
+<div id="teachers" class="tab-content active">
+<h2 class="section-title">Вихователі</h2>
+<div class="upload-area admin-only" id="teachersUploadArea">
+<input type="file" id="teacherUpload" accept="image/*" multiple>
+<button class="upload-btn" onclick="uploadImages('teacher')">Додати фото вихователів</button>
+<textarea id="teacherText" placeholder="Додати опис вихователів"></textarea>
+<button class="upload-btn" onclick="addText('teacher')">Додати текст</button>
+</div>
+<div class="gallery" id="teacherGallery"></div>
+<div id="teacherTextDisplay"></div>
+</div>
+
+<!-- Групи -->
+<div id="groups" class="tab-content">
+<h2 class="section-title">Групи</h2>
+<div class="upload-area admin-only" id="groupsUploadArea">
+<input type="file" id="groupsUpload" accept="image/*" multiple>
+<button class="upload-btn" onclick="uploadImages('groups')">Додати фото групи</button>
+<textarea id="groupsText" placeholder="Додати опис групи"></textarea>
+<button class="upload-btn" onclick="addText('groups')">Додати текст</button>
+</div>
+<div class="gallery" id="groupsGallery"></div>
+<div id="groupsTextDisplay"></div>
+</div>
+
+<!-- Накази -->
+<div id="orders" class="tab-content">
+<h2 class="section-title">Накази</h2>
+<div class="upload-area admin-only" id="ordersUploadArea">
+<input type="file" id="ordersUpload" accept="image/*" multiple>
+<button class="upload-btn" onclick="uploadImages('orders')">Додати фото наказів</button>
+<textarea id="ordersText" placeholder="Додати опис наказів"></textarea>
+<button class="upload-btn" onclick="addText('orders')">Додати текст</button>
+</div>
+<div class="gallery" id="ordersGallery"></div>
+<div id="ordersTextDisplay"></div>
+</div>
+
+<!-- Атестація -->
+<div id="attestation" class="tab-content">
+<h2 class="section-title">Атестація</h2>
+<div class="upload-area admin-only" id="attestationUploadArea">
+<input type="file" id="attestationUpload" accept="image/*" multiple>
+<button class="upload-btn" onclick="uploadImages('attestation')">Додати фото атестації</button>
+<textarea id="attestationText" placeholder="Додати текст"></textarea>
+<button class="upload-btn" onclick="addText('attestation')">Додати текст</button>
+</div>
+<div class="gallery" id="attestationGallery"></div>
+<div id="attestationTextDisplay"></div>
+</div>
+
+<!-- Вакантні посади -->
+<div id="vacant" class="tab-content">
+<h2 class="section-title">Вакантні посади</h2>
+<div class="upload-area admin-only" id="vacantUploadArea">
+<textarea id="vacantText" placeholder="Додати вакантні посади"></textarea>
+<button class="upload-btn" onclick="addText('vacant')">Додати текст</button>
+</div>
+<div id="vacantTextDisplay"></div>
+</div>
+
+<!-- Статут -->
+<div id="statut" class="tab-content">
+<h2 class="section-title">Статут</h2>
+<div class="upload-area admin-only" id="statutUploadArea">
+<textarea id="statutText" placeholder="Додати текст статуту"></textarea>
+<button class="upload-btn" onclick="addText('statut')">Додати текст</button>
+</div>
+<div id="statutTextDisplay"></div>
+</div>
+
+</div>
+
+<script>
+// =========================
+// Доступ
+function checkAccess(){
+    const input = document.getElementById('userInput').value.toLowerCase();
+    const mainContent = document.getElementById('mainContent');
+
+    if(input === '1890' || input === 'lisovectana370@gmail.com'){
+        mainContent.style.display = 'block';
+
+        // lisovectana370@gmail.com отримує права адміністратора
+        if(input === 'lisovectana370@gmail.com'){
+            document.body.classList.add('admin');
+        }
+
+        alert('Доступ надано!');
+    } else {
+        alert('Невірний пароль або email!');
+    }
+}
+
+// =========================
+// Вхід як гість
+function guestAccess(){
+    document.getElementById('mainContent').style.display = 'block';
+    document.body.classList.remove('admin'); // гість не має адмінських прав
+    alert('Ви увійшли як гість. Можна лише дивитися.');
+}
+
+// =========================
+// Вкладки
+const tabButtons = document.querySelectorAll('.tab-btn');
+const tabContents = document.querySelectorAll('.tab-content');
+tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        tabButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const target = btn.dataset.tab;
+        tabContents.forEach(tc => {
+            if(tc.id === target) tc.classList.add('active');
+            else tc.classList.remove('active');
+        });
+    });
+});
+
+// =========================
+// Завантаження фото
+function uploadImages(type){
+    if(!document.body.classList.contains('admin')) { alert('Немає доступу'); return; }
+    let input = document.getElementById(type+'Upload');
+    let gallery = document.getElementById(type+'Gallery');
+    for(let i=0;i<input.files.length;i++){
+        let file = input.files[i];
+        let reader = new FileReader();
+        reader.onload = function(e){
+            let img = document.createElement('img');
+            img.src = e.target.result;
+            gallery.appendChild(img);
+        }
+        reader.readAsDataURL(file);
+    }
+    input.value='';
+}
+
+// =========================
+// Додавання тексту
+function addText(type){
+    if(!document.body.classList.contains('admin')) { alert('Немає доступу'); return; }
+    let textarea = document.getElementById(type+'Text');
+    let display = document.getElementById(type+'TextDisplay');
+    if(textarea.value.trim() !== ''){
+        let p = document.createElement('p');
+        p.textContent = textarea.value;
+        display.appendChild(p);
+        textarea.value='';
+    }
+}
+</script>
+
+</body>
+</html>
+
